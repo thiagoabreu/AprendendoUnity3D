@@ -15,6 +15,11 @@ public class ControleDeJogador : MonoBehaviour {
 		var rotation = new Vector3(0, rotateHorizontal, 0);
 
 		transform.RotateAround(transform.position, Vector3.up, rotateHorizontal);
+	}
 
+	void OnTriggerEnter(Collider other) {
+		if (other.gameObject.tag == "Portal") {
+			transform.position = new Vector3(0, 2, -35);
+		}
 	}
 }
