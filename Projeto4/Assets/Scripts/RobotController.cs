@@ -13,6 +13,8 @@ public class RobotController : MonoBehaviour
 		public LayerMask whatIsGround;
 		public float jumpForce = 700f;
 
+	bool canDoubleJump = false;
+
 		// Use this for initialization
 		void Start ()
 		{
@@ -24,6 +26,9 @@ public class RobotController : MonoBehaviour
 				onGround = Physics2D.OverlapCircle (groundCheck.position, groundRadius, whatIsGround);
 
 				anim.SetBool ("Ground", onGround);
+
+			if (onGround)
+			canDoubleJump = true;
 
 				anim.SetFloat ("vSpeed", rigidbody2D.velocity.y);
 
@@ -42,9 +47,12 @@ public class RobotController : MonoBehaviour
 		// Update is called once per frame
 		void Update ()
 		{
-				if (onGround && Input.GetKeyDown (KeyCode.Space)) {
+				if ((onGround || canDoubleJump) && Input.GetKeyDown (KeyCode.Space)) {
 						anim.SetBool ("Ground", false);
 						rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+
+			if (!onGround && canDoubleJump)
+				canDoubleJump = false;
 				}
 		}
 
