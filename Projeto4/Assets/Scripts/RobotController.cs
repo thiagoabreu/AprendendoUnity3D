@@ -7,6 +7,11 @@ public class RobotController : MonoBehaviour
 		public float maxSpeed = 10f;
 		bool facingRight = true;
 		Animator anim;
+		bool onGround = false;
+		public Transform groundCheck;
+		float groundRadius = 0.2f;
+		public LayerMask whatIsGround;
+		public float jumpForce = 700f;
 
 		// Use this for initialization
 		void Start ()
@@ -14,9 +19,14 @@ public class RobotController : MonoBehaviour
 				anim = GetComponent<Animator> ();
 		}
 	
-		// Update is called once per frame
 		void FixedUpdate ()
 		{
+				onGround = Physics2D.OverlapCircle (groundCheck.position, groundRadius, whatIsGround);
+
+				anim.SetBool ("Ground", onGround);
+
+				anim.SetFloat ("vSpeed", rigidbody2D.velocity.y);
+
 				float move = Input.GetAxis ("Horizontal");
 
 				anim.SetFloat ("Speed", Mathf.Abs (move));
@@ -27,6 +37,15 @@ public class RobotController : MonoBehaviour
 						Flip ();
 				else if (move < 0 && facingRight)
 						Flip ();
+		}
+
+		// Update is called once per frame
+		void Update ()
+		{
+				if (onGround && Input.GetKeyDown (KeyCode.Space)) {
+						anim.SetBool ("Ground", false);
+						rigidbody2D.AddForce (new Vector2 (0, jumpForce));
+				}
 		}
 
 		void Flip ()
